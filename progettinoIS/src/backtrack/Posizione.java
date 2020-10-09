@@ -35,7 +35,7 @@ public class Posizione {
 		if(o.getClass()!=this.getClass()) 
 			return false;
 		Posizione tmp=(Posizione) o;
-		return tmp.colonna==this.colonna && tmp.riga==this.colonna;
+		return tmp.colonna==this.colonna && tmp.riga==this.riga;
 	}
 	
 	@Override
