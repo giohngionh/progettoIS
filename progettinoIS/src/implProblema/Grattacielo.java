@@ -9,146 +9,276 @@ import backtrack.*;
 public class Grattacielo extends Problema<Posizione, Integer> {
 	
 	private int M[][];
-	
-	Map<Posizione, Integer> scelte = new HashMap<Posizione, Integer>();
-	
+	private int [][] matrice;
+	private Map<Posizione, Integer> scelte = new HashMap<Posizione, Integer>();
 	private LinkedList<Posizione> percorso = new LinkedList<Posizione>();
-	
 	private Posizione inizio, fine;
+	private int minVal=1, maxVal;
+	private int[] NORD, SUD, OVEST, EST;
 	
-	private boolean righePoiColonne;
+	public Grattacielo(int righe, int colonne, int soluzioni) {
+		super(soluzioni);
+		if(righe!=colonne) throw new IllegalArgumentException("Righe e colonne non coincidono!");
+		this.M=new int[righe][colonne];
+		this.inizio=new Posizione(0,0);
+		this.fine=new Posizione(righe-1,colonne-1);
+		this.maxVal=righe;
+		this.NORD=new int[colonne];
+		this.SUD=new int[colonne];
+		this.EST=new int[righe];
+		this.OVEST=new int[righe];
+		generaVincoli(righe);
+	}
 	
-	public Grattacielo(int m[][],boolean righePoiColonne) {
-		this.M=m;
-		this.righePoiColonne=righePoiColonne;
-		this.inizio=new Posizione(1,1);
-		this.fine=new Posizione(5,5);
+	public Grattacielo(int righe, int colonne) {
+		if(righe!=colonne) throw new IllegalArgumentException("Righe e colonne non coincidono!");
+		this.M=new int[righe][colonne];
+		this.inizio=new Posizione(0,0);
+		this.fine=new Posizione(righe-1,colonne-1);
+		this.maxVal=righe;
+		this.NORD=new int[colonne];
+		this.SUD=new int[colonne];
+		this.EST=new int[righe];
+		this.OVEST=new int[righe];
+		generaVincoli(righe);
+	}
+	
+	public Grattacielo(int n) {
+		super(3);
+		this.M=new int [n][n];
+		this.inizio=new Posizione(0,0);
+		this.fine=new Posizione(n-1,n-1);
+		this.maxVal=n;
+		this.NORD=new int[n];
+		this.SUD=new int[n];
+		this.EST=new int[n];
+		this.OVEST=new int[n];
+		generaVincoli(n);
 	}
 	
 	@Override
 	protected Posizione primoPuntoDiScelta() {
 		return inizio;
 	}
-	//fatto
 
-	@Override
-	protected Integer primaScelta(Posizione ps) {
-		return Integer.values()[0];
-	}
-	//fatto
-	
-	@Override
-	protected Integer prossimaScelta(Integer v) {
-		return v.next();
-	}
-	//fatto
-	
-	@Override
-	protected Integer ultimaScelta(Posizione ps) {
-		return Integer.values()[Integer.values().length-1];
-	}
 	//fatto
 	
 	protected Posizione prossimoPuntoDiScelta(Posizione ps, Integer v) {
-		int riga=ps.getRiga();
-		int col=ps.getColonna();
-		Posizione p;
-		if(riga<5) {
-			if(col<5) {
-				p=new Posizione(riga, col+1);
-				return p;
-			}
-			p=new Posizione(riga+1, 1);
-			return p;
-		}
-		if(col<5) {
-			p=new Posizione(riga, col+1);
-			return p;
-		}
-		return null;
+		int riga    = ps.getRiga();
+		int colonna = ps.getColonna();
+		if(colonna == riga && riga == M.length)
+			return null;
+		if(colonna < M.length-1)
+			return new Posizione(riga, colonna+1);
+		return new Posizione(riga+1, 0);
+	}
+
+	@Override
+	protected Posizione ultimoPuntoDiScelta() {
+		return fine;
+	}
+
+	@Override
+	protected Integer primaScelta(Posizione ps) {
+		return minVal;
 	}
 	
 	@Override
-	protected boolean assegnabile(Integer value, Posizione puntoDiScelta) {
-		int riga=puntoDiScelta.getRiga();
-		int colonna=puntoDiScelta.getColonna();
-		if(unicita(riga, colonna, value) && visibilita(riga, colonna))
-			return true;
-		return false;		
+	protected Integer prossimaScelta(Integer v) {
+		return (v + 1) % (maxVal+1);
 	}
-	//fatto
-
-	private boolean unicita(int riga, int colonna, Integer v) {
-		int val=v.val();
-		int i=1;
-		while(i<6) {
-			if(i==riga) i++;
-			if(M[i][colonna]==val)	return false;
-		}
-		i=1;
-		while(i<6) {
-			if(i==colonna) i++;
-			if(M[riga][i]==val) return false;
-		}
-		return true;
-	}
-	//fatto
 	
-	private boolean visibilita(int riga, int colonna) {
-		int contN=0, contS=0, contE=0, contO=0;
-		//controllo che i valori rispettino il vincolo ovest
-		int tmp=0;
-		int i=1;
-		while(i<6) {
-			if(M[riga][i]>tmp) {
-				tmp=M[riga][i];
-				contO++;
-			}
-			i++;
+	@Override
+	protected Integer ultimaScelta(Posizione ps) {
+		return maxVal;
+	}
+	
+	protected boolean assegnabile(Integer scelta, Posizione puntoDiScelta) {
+		return sceltaUnica(scelta, puntoDiScelta) & verificaVincoli();
+	}
+	
+	protected boolean sceltaUnica(Integer s, Posizione p) {
+		int riga = p.getRiga();
+		int colonna = p.getColonna();
+		for( int i = 0; i < M.length ; i++) {
+			if(M[i][colonna] == s) return false;
 		}
-		if (contO!=M[riga][0]) return false;
-		//controllo che i valori rispettino il vincolo est
-		tmp=0;
-		i=5;
-		while(i>0) {
-			if(M[riga][i]>tmp) {
-				tmp=M[riga][i];
-				contE++;
-			}
-			i--;
+		for( int j = 0; j < M[0].length; j++) {
+			if(M[riga][j] == s) return false;
 		}
-		if (contE!=M[riga][6]) return false;
-		//controllo che i valori rispettino il vincolo nord
-		tmp=0;
-		i=1;
-		while(i<6) {
-			if(M[i][colonna]>tmp) {
-				tmp=M[i][colonna];
-				contN++;
+		return true;
+	}//metodo per la verifica di unicita' del valore in una data riga e colonna
+	
+	protected boolean verificaVincoli() {
+		int count=1, max;
+		for(int j=0; j<M.length; j++) {
+			int i=0;
+			max=M[i][j]; 
+			while(i<M.length-1) {
+				if(M[i+1][j] > max) {
+					count++;
+					max=M[i+1][j];
+					i++;
+				}
+				else
+					i++;
 			}
-			i++;
-		}
-		if(contS!=M[0][colonna]) return true;
-		//controllo che i valori rispettino il vincolo sud
-		tmp=0;
-		i=5;
-		while(i>0) {
-			if(M[i][colonna]>tmp) {
-				tmp=M[i][colonna];
-				contS++;
+			//ho determinato quanti palazzi si "vedono" nella colonna j guardando da NORD
+			if(count>NORD[j]) return false;
+			count=1;
+			
+			i=M.length-1;
+			max=M[i][j]; 
+			while(i>0) {
+				if(M[i-1][j] > max) {
+					count++;
+					max=M[i-1][j];
+					i--;
+				}
+				else
+					i--;
 			}
-			i--;
-		}
-		if(contS!=M[6][colonna]) return true;
+			//ho determinato quanti palazzi si "vedono" dalla colonna j guardando da SUD
+			if(count>SUD[j]) return false;
+			count=1;
+		}//CONTROLLO NORD + SUD
+		
+		for(int i=0; i<M.length; i++) {
+			int j=0;
+			max=M[i][j]; 
+			while(j<M.length-1) {
+				if(M[i][j+1] > max) {
+					count++;
+					max=M[i][j+1];
+					j++;
+				}
+				else
+					j++;
+			}
+			//ho determinato quanti palazzi si "vedono" dalla riga i guardando da OVEST
+			if(count>OVEST[i]) return false;
+			count=1;
+			
+			j=M.length-1;
+			max=M[i][j]; 
+			while(j>0) {
+				if(M[i][j-1] > max) {
+					count++;
+					max=M[i][j-1];
+					j--;
+				}
+				else
+					j--;
+			}
+			//ho determinato quanti palazzi si "vedono" dalla colonna j guardando da EST
+			if(count>EST[i]) return false;
+			count=1;
+		}//CONTROLLO OVEST +SUD
 		return true;
 	}
-	//fatto
+	
+	private void generaVincoli(int n) {
+		Sudoku sudoku = new Sudoku(n);
+		sudoku.risolvi();
+		this.matrice = sudoku.ritornaSoluzione();
+		assegnaVincoli(matrice);
+		stampa(matrice);
+		/*
+		System.out.println("I vincoli derivanti da matrice sono:");
+		System.out.print("NORD->");
+		for(int i=0; i<matrice.length; i++) {
+			System.out.print(NORD[i]+" ");
+		}
+		System.out.println();
+		System.out.print("SUD->");
+		for(int i=0; i<matrice.length; i++) {
+			System.out.print(SUD[i]+" ");
+		}
+		System.out.println();
+		System.out.print("OVEST->");
+		for(int i=0; i<matrice.length; i++) {
+			System.out.print(OVEST[i]+" ");
+		}
+		System.out.println();
+		System.out.print("EST->");
+		for(int i=0; i<matrice.length; i++) {
+			System.out.print(EST[i]+" ");
+		}
+		*/
+	}
+	
+	private void assegnaVincoli(int [][] m) {
+		int count=1, max;
+		for(int j=0; j<matrice.length; j++) {
+			int i=0;
+			max=matrice[i][j]; 
+			while(i<matrice.length-1) {
+				if(matrice[i+1][j] > max) {
+					count++;
+					max=matrice[i+1][j];
+					i++;
+				}
+				else
+					i++;
+			}
+			//ho determatriceinato quanti palazzi si "vedono" nella colonna j guardando da NORD
+			NORD[j]=count;
+			count=1;
+			
+			i=matrice.length-1;
+			max=matrice[i][j]; 
+			while(i>0) {
+				if(matrice[i-1][j] > max) {
+					count++;
+					max=matrice[i-1][j];
+					i--;
+				}
+				else
+					i--;
+			}
+			//ho determatriceinato quanti palazzi si "vedono" dalla colonna j guardando da SUD
+			SUD[j]=count;
+			count=1;
+		}//CONTROLLO NORD + SUD
+		
+		for(int i=0; i<matrice.length; i++) {
+			int j=0;
+			max=matrice[i][j]; 
+			while(j<matrice.length-1) {
+				if(matrice[i][j+1] > max) {
+					count++;
+					max=matrice[i][j+1];
+					j++;
+				}
+				else
+					j++;
+			}
+			//ho determatriceinato quanti palazzi si "vedono" dalla riga i guardando da OVEST
+			OVEST[i]=count;
+			count=1;
+			
+			j=matrice.length-1;
+			max=matrice[i][j]; 
+			while(j>0) {
+				if(matrice[i][j-1] > max) {
+					count++;
+					max=matrice[i][j-1];
+					j--;
+				}
+				else
+					j--;
+			}
+			//ho determinato quanti palazzi si "vedono" dalla colonna j guardando da EST
+			EST[i]=count;
+			count=1;
+		}//CONTROLLO OVEST +SUD
+	}
 	
 	@Override
 	protected void assegna(Integer value, Posizione puntoDiScelta) {
 		percorso.add(puntoDiScelta);
 		scelte.put(puntoDiScelta, value);
-		M[puntoDiScelta.getRiga()][puntoDiScelta.getColonna()]=value.val();
+		M[puntoDiScelta.getRiga()][puntoDiScelta.getColonna()]=value;
 	}
 
 	@Override
@@ -171,29 +301,57 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 	}
 
 	@Override
-	protected Posizione ultimoPuntoDiScelta() {
-		return fine;
-	}
-
-	@Override
 	protected void scriviSoluzione(int nrsol) {
 		System.out.println("Soluzione numero: "+nrsol);
-		System.out.println(this.toString());
+		System.out.print("  ");
+		for(int i=0; i<M.length; i++) {
+			if(i!=M.length-1)
+				System.out.print(NORD[i]+" ");
+			else
+				System.out.print(NORD[i]);
+		}
+		System.out.print("  ");
+		System.out.println();
+		
+		for(int i=0; i<(M.length*2)+4; i++) 
+			System.out.print("-");
+		//sezione nord
+		
+		for(int i=0; i<M.length; i++) {
+			System.out.print(OVEST[i]+"|");
+			for(int j=0; j<M[0].length; j++) {
+				if(j!=M[0].length-1)
+					System.out.print(M[i][j]+" ");
+				else
+					System.out.print(M[i][j]);
+			}
+			System.out.print("|"+EST[i]);
+		}
+		//blocco principale compreso EST e OVEST
+		System.out.println();
+		for(int i=0; i<(M.length*2)+4; i++) 
+			System.out.print("-");
+		
+		System.out.println();
+		System.out.print("  ");
+		for(int i=0; i<M.length; i++) {
+			if(i!=M.length-1)
+				System.out.print(SUD[i]+" ");
+			else
+				System.out.print(SUD[i]);
+		}
+		System.out.print("  ");
 	}
 	
-	public String print(){
-		StringBuilder sb=new StringBuilder(600);
-		for (int i=0; i<=6; i++) {
-			for(int j=0; j<=6; j++) {
-				if(M[i][j]==-1)
-					sb.append("#");
+	public void stampa(int [][] m){
+		for (int i=0; i<m.length; i++) {
+			for(int j=0; j<m[0].length; j++) {
+				if(j!=m.length-1)	
+					System.out.print(m[i][j]+" ");
 				else
-					sb.append(M[i][j]);
-				if(j!=6) sb.append("\t");
+					System.out.print(m[i][j]);
 			}
-			sb.append("\n");
+			System.out.print("\n");
 		}
-		return sb.toString();
 	}
-
 }

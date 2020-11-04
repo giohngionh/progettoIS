@@ -6,13 +6,17 @@ import java.util.Map;
 
 import backtrack.*;
 
-public class Sudoku extends Problema<Posizione, Integer> {
+public class Sudoku extends Problema<Posizione, Integer> implements Cloneable {
 	
 	private int M[][];
-	Map<Posizione, Integer> scelte = new HashMap<Posizione, Integer>();
+	private int Matrice[][];
+	private Map<Posizione, Integer> scelte = new HashMap<Posizione, Integer>();
 	private LinkedList<Posizione> percorso = new LinkedList<Posizione>();
 	private Posizione inizio, fine;
 	private int minVal=1, maxVal;
+	private LinkedList<int[][]> solSalvate = new LinkedList<>();
+	private boolean salvaSoluzioni=false;
+	private int nSoluzioneCasuale;
 	
 	public Sudoku(int righe, int colonne,int soluzioni){
 		super(soluzioni);
@@ -34,13 +38,16 @@ public class Sudoku extends Problema<Posizione, Integer> {
 	}/*costruttore che imposta il massimo numero di soluzioni pari al massimo calcolabile. Per
 		il resto identico al primo costr. */
 	
-	public Sudoku() {
-		super(3);
-		this.M=new int[5][5];
+	public Sudoku(int n) {
+		this.M=new int[n][n];
+		this.Matrice=new int [n][n];
 		this.inizio=new Posizione(0,0);
-		this.fine=new Posizione(4, 4);
-		this.maxVal=5;
-	}//costruttore ad hoc per la mia applicazione, 5x5 con valori da 1 a 5. Cerca 3 soluzioni.
+		this.fine=new Posizione(n-1, n-1);
+		this.maxVal=n;
+		this.salvaSoluzioni=true;
+		int range=100000-this.minVal;
+		this.nSoluzioneCasuale=(int) (Math.random()*range)+this.minVal;
+	}//costruttore ad hoc per la mia applicazione
 	
 	@Override
 	protected Posizione primoPuntoDiScelta() {
@@ -127,13 +134,29 @@ public class Sudoku extends Problema<Posizione, Integer> {
 
 	@Override
 	protected void scriviSoluzione(int nrsol) {
-		System.out.println("Soluzione n: "+nrsol);
-		for(int i=0; i<M.length; i++) {
-			for(int j=0; j<M.length; j++) {
-				System.out.print(M[i][j]+" ");
+		if(salvaSoluzioni & nrsol==nSoluzioneCasuale) {
+			System.out.println("Soluzione casuel trovata! nSoluzionecasuel="+nSoluzioneCasuale+" risulta uguale alla soluzione corrente nrsol="+nrsol);
+			if(M.length!=Matrice.length | M[0].length!=Matrice[0].length)
+				throw new IllegalArgumentException("Matrici incompatibili!");
+			for(int i=0; i<M.length; i++) {
+				for(int j=0; j< M[0].length; j++) {
+					Matrice[i][j]=M[i][j];
+				}
 			}
-			System.out.println();
 		}
+		//else {
+			//System.out.println("Soluzione n: "+nrsol);
+			//for(int i=0; i<M.length; i++) {
+				//for(int j=0; j<M.length; j++) {
+					//System.out.print(M[i][j]+" ");
+				//}
+				//System.out.println();
+			//}
+		//}
+	}
+	
+	public int[][] ritornaSoluzione(){
+		return this.Matrice;
 	}
 
 }
