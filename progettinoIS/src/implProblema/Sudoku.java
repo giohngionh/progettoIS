@@ -44,12 +44,11 @@ public class Sudoku extends Problema<Posizione, Integer> implements Cloneable {
 		this.fine=new Posizione(n-1, n-1);
 		this.maxVal=n;
 		this.salvaSoluzioni=true;
-		int exp=0;
-		switch(n) {
-		case 4: exp=10;
-		case 5: exp=150;
-		default: exp=1/100;
-		}
+		int exp=1;
+		if(n==4)
+			exp=10;
+		if(n==5)
+			exp=1610;
 		int range=100*exp-this.minVal;
 		this.nSoluzioneCasuale=(int) (Math.random()*range)+this.minVal;
 	}//costruttore ad hoc per la mia applicazione

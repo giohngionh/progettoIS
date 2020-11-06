@@ -39,7 +39,7 @@ public abstract class Problema<P, S> {
 		P ps = primoPuntoDiScelta();
 		S s = primaScelta(ps);
 
-		boolean backtrack = false, fine = false;
+		boolean backtrack = false, fine = false, risolvibile=false;
 		do {			
 			while (!backtrack && nrsoluzione < nummaxsoluzioni) {
 				
@@ -47,6 +47,7 @@ public abstract class Problema<P, S> {
 					assegna(s, ps);
 					if (ps.equals(ultimoPuntoDiScelta())) {
 						++nrsoluzione;
+						risolvibile=true;
 						scriviSoluzione(nrsoluzione);
 						deassegna(s, ps);
 						if (!s.equals(ultimaScelta(ps)))
@@ -78,5 +79,6 @@ public abstract class Problema<P, S> {
 			}
 
 		} while (!fine);
+		if(!risolvibile) scriviSoluzione(-1);
 	}
 }

@@ -1,6 +1,7 @@
 package implProblema;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import backtrack.*;
@@ -11,6 +12,7 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 	private int [][] matrice;
 	private Map<Posizione, Integer> scelte = new HashMap<Posizione, Integer>();
 	private LinkedList<Posizione> percorso = new LinkedList<Posizione>();
+	private HashSet<Posizione> userChoices=new HashSet<>();
 	private Posizione inizio, fine;
 	private int minVal=1, maxVal;
 	private int[] NORD, SUD, OVEST, EST;
@@ -239,6 +241,9 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 	
 	@Override
 	protected void assegna(Integer value, Posizione puntoDiScelta) {
+		if(userChoices.contains(puntoDiScelta)) {
+			return;
+		}
 		percorso.add(puntoDiScelta);
 		scelte.put(puntoDiScelta, value);
 		M[puntoDiScelta.getRiga()][puntoDiScelta.getColonna()]=value;
@@ -265,6 +270,9 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 
 	@Override
 	protected void scriviSoluzione(int nrsol) {
+		if(nrsol==-1) {
+			System.out.println("La configurazione attuale di vincoli non ammette soluzioni.");
+		}
 		if(verificaVincoli() && this.soluzioniValide<this.soluzioniMAX) {
 			this.soluzioniValide++;
 			System.out.println("Soluzione numero: "+soluzioniValide);
@@ -334,5 +342,15 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 				System.out.print(v[j]);
 		}
 		System.out.print("\n");
+	}
+	
+	public void inserisci(int x, Posizione p) {
+		userChoices.add(p);
+		assegna(x,p);
+	}
+	
+	public void rimuovi(int x,Posizione p) {
+		userChoices.remove(p);
+		deassegna(x,p);
 	}
 }
