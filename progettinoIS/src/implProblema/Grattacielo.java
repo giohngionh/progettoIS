@@ -1,7 +1,6 @@
 package implProblema;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import backtrack.*;
@@ -15,36 +14,22 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 	private Posizione inizio, fine;
 	private int minVal=1, maxVal;
 	private int[] NORD, SUD, OVEST, EST;
+	private int soluzioniValide=0, soluzioniMAX=0;
 	
-	public Grattacielo(int righe, int colonne, int soluzioni) {
-		super(soluzioni);
-		if(righe!=colonne) throw new IllegalArgumentException("Righe e colonne non coincidono!");
-		this.M=new int[righe][colonne];
+	public Grattacielo(int N, int []n, int []s, int []e, int []o) {
+		this.soluzioniMAX=Integer.MAX_VALUE;
+		this.M=new int[N][N];
 		this.inizio=new Posizione(0,0);
-		this.fine=new Posizione(righe-1,colonne-1);
-		this.maxVal=righe;
-		this.NORD=new int[colonne];
-		this.SUD=new int[colonne];
-		this.EST=new int[righe];
-		this.OVEST=new int[righe];
-		generaVincoli(righe);
+		this.fine=new Posizione(N-1,N-1);
+		this.maxVal=N;
+		this.NORD=n;
+		this.SUD=s;
+		this.EST=e;
+		this.OVEST=o;
 	}
 	
-	public Grattacielo(int righe, int colonne) {
-		if(righe!=colonne) throw new IllegalArgumentException("Righe e colonne non coincidono!");
-		this.M=new int[righe][colonne];
-		this.inizio=new Posizione(0,0);
-		this.fine=new Posizione(righe-1,colonne-1);
-		this.maxVal=righe;
-		this.NORD=new int[colonne];
-		this.SUD=new int[colonne];
-		this.EST=new int[righe];
-		this.OVEST=new int[righe];
-		generaVincoli(righe);
-	}
-	
-	public Grattacielo(int n) {
-		super(3);
+	public Grattacielo(int n, int maxSol) {
+		this.soluzioniMAX=maxSol;
 		this.M=new int [n][n];
 		this.inizio=new Posizione(0,0);
 		this.fine=new Posizione(n-1,n-1);
@@ -94,7 +79,7 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 	}
 	
 	protected boolean assegnabile(Integer scelta, Posizione puntoDiScelta) {
-		return sceltaUnica(scelta, puntoDiScelta) & verificaVincoli();
+		return sceltaUnica(scelta, puntoDiScelta);
 	}
 	
 	protected boolean sceltaUnica(Integer s, Posizione p) {
@@ -112,6 +97,7 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 	protected boolean verificaVincoli() {
 		int count=1, max;
 		for(int j=0; j<M.length; j++) {
+			//sceglie colonna da controllare 
 			int i=0;
 			max=M[i][j]; 
 			while(i<M.length-1) {
@@ -124,7 +110,7 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 					i++;
 			}
 			//ho determinato quanti palazzi si "vedono" nella colonna j guardando da NORD
-			if(count>NORD[j]) return false;
+			if(count!=NORD[j]) return false;
 			count=1;
 			
 			i=M.length-1;
@@ -139,10 +125,10 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 					i--;
 			}
 			//ho determinato quanti palazzi si "vedono" dalla colonna j guardando da SUD
-			if(count>SUD[j]) return false;
+			if(count!=SUD[j]) return false;
 			count=1;
 		}//CONTROLLO NORD + SUD
-		
+		count=1;
 		for(int i=0; i<M.length; i++) {
 			int j=0;
 			max=M[i][j]; 
@@ -156,11 +142,11 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 					j++;
 			}
 			//ho determinato quanti palazzi si "vedono" dalla riga i guardando da OVEST
-			if(count>OVEST[i]) return false;
+			if(count!=OVEST[i]) return false;
 			count=1;
 			
 			j=M.length-1;
-			max=M[i][j]; 
+			max=M[i][j];
 			while(j>0) {
 				if(M[i][j-1] > max) {
 					count++;
@@ -171,7 +157,7 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 					j--;
 			}
 			//ho determinato quanti palazzi si "vedono" dalla colonna j guardando da EST
-			if(count>EST[i]) return false;
+			if(count!=EST[i]) return false;
 			count=1;
 		}//CONTROLLO OVEST +SUD
 		return true;
@@ -182,29 +168,6 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 		sudoku.risolvi();
 		this.matrice = sudoku.ritornaSoluzione();
 		assegnaVincoli(matrice);
-		stampa(matrice);
-		/*
-		System.out.println("I vincoli derivanti da matrice sono:");
-		System.out.print("NORD->");
-		for(int i=0; i<matrice.length; i++) {
-			System.out.print(NORD[i]+" ");
-		}
-		System.out.println();
-		System.out.print("SUD->");
-		for(int i=0; i<matrice.length; i++) {
-			System.out.print(SUD[i]+" ");
-		}
-		System.out.println();
-		System.out.print("OVEST->");
-		for(int i=0; i<matrice.length; i++) {
-			System.out.print(OVEST[i]+" ");
-		}
-		System.out.println();
-		System.out.print("EST->");
-		for(int i=0; i<matrice.length; i++) {
-			System.out.print(EST[i]+" ");
-		}
-		*/
 	}
 	
 	private void assegnaVincoli(int [][] m) {
@@ -302,48 +265,55 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 
 	@Override
 	protected void scriviSoluzione(int nrsol) {
-		System.out.println("Soluzione numero: "+nrsol);
-		System.out.print("  ");
-		for(int i=0; i<M.length; i++) {
-			if(i!=M.length-1)
-				System.out.print(NORD[i]+" ");
-			else
-				System.out.print(NORD[i]);
-		}
-		System.out.print("  ");
-		System.out.println();
-		
-		for(int i=0; i<(M.length*2)+4; i++) 
-			System.out.print("-");
-		//sezione nord
-		
-		for(int i=0; i<M.length; i++) {
-			System.out.print(OVEST[i]+"|");
-			for(int j=0; j<M[0].length; j++) {
-				if(j!=M[0].length-1)
-					System.out.print(M[i][j]+" ");
+		if(verificaVincoli() && this.soluzioniValide<this.soluzioniMAX) {
+			this.soluzioniValide++;
+			System.out.println("Soluzione numero: "+soluzioniValide);
+			System.out.print("  ");
+			for(int i=0; i<M.length; i++) {
+				if(i!=M.length-1)
+					System.out.print(NORD[i]+" ");
 				else
-					System.out.print(M[i][j]);
+					System.out.print(NORD[i]);
 			}
-			System.out.print("|"+EST[i]);
+			System.out.print("  ");
+			System.out.println();
+			
+			for(int i=0; i<(M.length*2)+4; i++) 
+				System.out.print("-");
+			System.out.println();
+			//sezione nord
+			
+			for(int i=0; i<M.length; i++) {
+				System.out.print(OVEST[i]+"|");
+				for(int j=0; j<M[0].length; j++) {
+					if(j!=M[0].length-1)
+						System.out.print(M[i][j]+" ");
+					else
+						System.out.print(M[i][j]);
+				}
+				System.out.print("|"+EST[i]);
+				System.out.println();
+			}
+			//blocco principale compreso EST e OVEST
+			
+			for(int i=0; i<(M.length*2)+4; i++) 
+				System.out.print("-");
+			
+			System.out.println();
+			System.out.print("  ");
+			for(int i=0; i<M.length; i++) {
+				if(i!=M.length-1)
+					System.out.print(SUD[i]+" ");
+				else
+					System.out.print(SUD[i]);
+			}
+			System.out.print("  ");
+			System.out.println();
 		}
-		//blocco principale compreso EST e OVEST
-		System.out.println();
-		for(int i=0; i<(M.length*2)+4; i++) 
-			System.out.print("-");
 		
-		System.out.println();
-		System.out.print("  ");
-		for(int i=0; i<M.length; i++) {
-			if(i!=M.length-1)
-				System.out.print(SUD[i]+" ");
-			else
-				System.out.print(SUD[i]);
-		}
-		System.out.print("  ");
 	}
 	
-	public void stampa(int [][] m){
+	protected void stampa(int [][] m){
 		for (int i=0; i<m.length; i++) {
 			for(int j=0; j<m[0].length; j++) {
 				if(j!=m.length-1)	
@@ -353,5 +323,16 @@ public class Grattacielo extends Problema<Posizione, Integer> {
 			}
 			System.out.print("\n");
 		}
+	}
+	
+	protected void stampaVincoli(int[]v) {
+		
+		for(int j=0; j<v.length; j++) {
+			if(j!=v.length-1)	
+				System.out.print(v[j]+" ");
+			else
+				System.out.print(v[j]);
+		}
+		System.out.print("\n");
 	}
 }

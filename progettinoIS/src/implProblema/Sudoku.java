@@ -14,7 +14,6 @@ public class Sudoku extends Problema<Posizione, Integer> implements Cloneable {
 	private LinkedList<Posizione> percorso = new LinkedList<Posizione>();
 	private Posizione inizio, fine;
 	private int minVal=1, maxVal;
-	private LinkedList<int[][]> solSalvate = new LinkedList<>();
 	private boolean salvaSoluzioni=false;
 	private int nSoluzioneCasuale;
 	
@@ -45,7 +44,13 @@ public class Sudoku extends Problema<Posizione, Integer> implements Cloneable {
 		this.fine=new Posizione(n-1, n-1);
 		this.maxVal=n;
 		this.salvaSoluzioni=true;
-		int range=100000-this.minVal;
+		int exp=0;
+		switch(n) {
+		case 4: exp=10;
+		case 5: exp=150;
+		default: exp=1/100;
+		}
+		int range=100*exp-this.minVal;
 		this.nSoluzioneCasuale=(int) (Math.random()*range)+this.minVal;
 	}//costruttore ad hoc per la mia applicazione
 	
@@ -135,7 +140,6 @@ public class Sudoku extends Problema<Posizione, Integer> implements Cloneable {
 	@Override
 	protected void scriviSoluzione(int nrsol) {
 		if(salvaSoluzioni & nrsol==nSoluzioneCasuale) {
-			System.out.println("Soluzione casuel trovata! nSoluzionecasuel="+nSoluzioneCasuale+" risulta uguale alla soluzione corrente nrsol="+nrsol);
 			if(M.length!=Matrice.length | M[0].length!=Matrice[0].length)
 				throw new IllegalArgumentException("Matrici incompatibili!");
 			for(int i=0; i<M.length; i++) {
@@ -144,15 +148,6 @@ public class Sudoku extends Problema<Posizione, Integer> implements Cloneable {
 				}
 			}
 		}
-		//else {
-			//System.out.println("Soluzione n: "+nrsol);
-			//for(int i=0; i<M.length; i++) {
-				//for(int j=0; j<M.length; j++) {
-					//System.out.print(M[i][j]+" ");
-				//}
-				//System.out.println();
-			//}
-		//}
 	}
 	
 	public int[][] ritornaSoluzione(){
