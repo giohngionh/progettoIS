@@ -5,7 +5,7 @@ import model.backtrack.*;
 import java.util.*;
 
 public class Sudoku extends Problema<Posizione, Integer>{
-    protected Cella[] M, Scacchiera;	//scacchiera del gioco
+    protected int[] M, Scacchiera;	//scacchiera del gioco
     private Map<Posizione, Integer> scelte;
     private LinkedList<Posizione> percorso;
     private HashSet<Posizione> scelteUtente;
@@ -16,10 +16,10 @@ public class Sudoku extends Problema<Posizione, Integer>{
 
     public Sudoku(int n,int soluzioni){
         super(soluzioni);
-        this.M=new Cella[n*n];
+        this.M=new int[n*n];
         for(int i =0; i<n; i++){
             for(int j=0; j<n; j++){
-                M[(i*n)+j] = new Cella(new Posizione(i,j),0, null);
+                M[(i*n)+j] = 0;
             }
         }
         this.N=n;
@@ -36,10 +36,10 @@ public class Sudoku extends Problema<Posizione, Integer>{
 
     public Sudoku(int n) {
         super();
-        this.M=new Cella[n*n];
+        this.M=new int[n*n];
         for(int i =0; i<n; i++){
             for(int j=0; j<n; j++){
-                M[(i*n)+j] = new Cella(new Posizione(i,j),0, null);
+                M[(i*n)+j] = 0;
             }
         }
         this.N=n;
@@ -126,25 +126,25 @@ public class Sudoku extends Problema<Posizione, Integer>{
         int i=pos, N=maxVal;
         while(i%N!=0 || i%N==N) {
             i--;
-            if(M[i].getValore()==s)
+            if(M[i]==s)
                 return false;
         }//controllo la riga corrente per duplicati andando dalla pos corrente a inizio riga
         i=pos;
         while(i%N!=N-1) {
             i++;
-            if(M[i].getValore()==s)
+            if(M[i]==s)
                 return false;
         }//controllo la riga corrente per duplicati andando dalla pos corrente a fine riga
         i=pos;
         while(i>N) {
             i-=N;
-            if(M[i].getValore()==s)
+            if(M[i]==s)
                 return false;
         }//controllo la collonna corrente andando dalla pos corrente a inizio colonna
         i=pos;
         while(i<N*(N-1)) {
             i+=N;
-            if(M[i].getValore()==s)
+            if(M[i]==s)
                 return false;
         }//controllo la collonna corrente andando dalla pos corrente a inizio colonna
         return true;
@@ -162,7 +162,7 @@ public class Sudoku extends Problema<Posizione, Integer>{
         int c=puntoDiScelta.getColonna();
         percorso.add(puntoDiScelta);
         scelte.put(puntoDiScelta, scelta);
-        M[c+(r*N)].setValore(scelta);
+        M[c+(r*N)] = scelta;
     }
 
     @Override
@@ -173,7 +173,7 @@ public class Sudoku extends Problema<Posizione, Integer>{
         int c=puntoDiScelta.getColonna();
         percorso.removeLast();
         scelte.remove(puntoDiScelta);
-        M[c+(r*N)].setValore(0);
+        M[c+(r*N)] = 0;
     }
 
     @Override
@@ -204,7 +204,7 @@ public class Sudoku extends Problema<Posizione, Integer>{
         }
         int r=ps.getRiga();
         int c=ps.getColonna();
-        M[c+(r*N)].setValore(valore);
+        M[c+(r*N)] = valore;
         scelteUtente.add(ps);
     }//inserisci
 
@@ -213,7 +213,7 @@ public class Sudoku extends Problema<Posizione, Integer>{
             throw new IllegalArgumentException("La casella che si cerca di rimuovere non esiste!");
         int r=ps.getRiga();
         int c=ps.getColonna();
-        M[c+(r*N)].setValore(valore);
+        M[c+(r*N)] = valore;
         scelteUtente.remove(ps);
     }
 
@@ -221,18 +221,18 @@ public class Sudoku extends Problema<Posizione, Integer>{
         if(numeroSoluzione != soluzioneCasuale)
             return;
         else{
-            this.Scacchiera = new Cella[M.length];
+            this.Scacchiera = new int[M.length];
             for (int i = 0; i < M.length; i++){
-                Scacchiera[i] = new Cella(M[i].getPosizione(), M[i].getValore(),null);
+                Scacchiera[i] = M[i];
             }
         }
     }
 
-    protected Cella[] getScacchiera(){
+    protected int[] getScacchiera(){
         return Scacchiera;
     }
 
-    public Cella[] getM(){
+    public int[] getM(){
         return M;
     }
 

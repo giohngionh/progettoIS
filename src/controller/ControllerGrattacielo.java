@@ -1,7 +1,7 @@
 package controller;
 
 import model.backtrack.Posizione;
-import model.implProblema.Cella;
+
 import model.implProblema.Grattacielo;
 
 import java.awt.*;

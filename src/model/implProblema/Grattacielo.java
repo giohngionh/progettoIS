@@ -42,15 +42,15 @@ public class Grattacielo extends Sudoku {
 
     private void estraiVincoli() {
         super.risolvi(true);
-        Cella[] s=super.getScacchiera();
+        int[] s=super.getScacchiera();
         
         int count=0, N=getN(), max=-1;
         //calcolo vincoli NORD
         for(int i=0; i<N ; i++){
             for ( int j=i; j<(N*N); j+=N){
-                if(s[j].getValore()>max){
+                if(s[j]>max){
                     count++;
-                    max=s[j].getValore();
+                    max=s[j];
                 }
             }
             NORD[i]=count;
@@ -60,9 +60,9 @@ public class Grattacielo extends Sudoku {
         int x=0;
         for(int i=s.length-5; i<s.length ; i++){
             for ( int j=i; j>0; j-=N){
-                if(s[j].getValore()>max){
+                if(s[j]>max){
                     count++;
-                    max=s[j].getValore();
+                    max=s[j];
                 }
             }
             SUD[x]=count;
@@ -71,9 +71,9 @@ public class Grattacielo extends Sudoku {
         x=0;
         //calcolo vincoli OVEST
         for(int i=0; i<s.length; i++){
-            if(s[i].getValore()>max){
+            if(s[i]>max){
                 count++;
-                max=s[i].getValore();
+                max=s[i];
             }
             if((i+1)%N==0) { //siamo in corrisponde della fine di una riga della scacchiera
                 OVEST[x]=count;
@@ -84,9 +84,9 @@ public class Grattacielo extends Sudoku {
         x=N-1;
         //calcolo vincoli EST
         for(int i=s.length-1; i>=0; i--){
-            if(s[i].getValore()>max){
+            if(s[i]>max){
                 count++;
-                max=s[i].getValore();
+                max=s[i];
             }
             if(i%N==0) { //siamo in corrisponde dell'inizio di una riga della scacchiera
                 EST[x]=count;
@@ -98,14 +98,14 @@ public class Grattacielo extends Sudoku {
 
     @Override
     protected boolean verificaVincoli() {
-        Cella[] M=getM();
+        int[] M=getM();
         int count=0, N=getN(), max=-1;
         //verifico vincoli NORD
         for(int i=0; i<N ; i++){
             for ( int j=i; j<(N*N); j+=N){
-                if(M[j].getValore()>max){
+                if(M[j]>max){
                     count++;
-                    max=M[j].getValore();
+                    max=M[j];
                 }
             }
             if(NORD[i]!=count)
@@ -116,9 +116,9 @@ public class Grattacielo extends Sudoku {
         int x=0;
         for(int i=M.length-5; i<M.length-1 ; i++){
             for ( int j=i; j>0; j-=N){
-                if(M[j].getValore()>max){
+                if(M[j]>max){
                     count++;
-                    max=M[j].getValore();
+                    max=M[j];
                 }
             }
             if(SUD[x]!=count)
@@ -128,9 +128,9 @@ public class Grattacielo extends Sudoku {
         x=0;
         //verifico vincoli OVEST
         for(int i=0; i<M.length; i++){
-            if(M[i].getValore()>max){
+            if(M[i]>max){
                 count++;
-                max=M[i].getValore();
+                max=M[i];
             }
             if((i+1)%N==0) { //siamo in corrisponde della fine di una riga della scacchiera
                 if(OVEST[x]!=count)
@@ -142,9 +142,9 @@ public class Grattacielo extends Sudoku {
         x=N-1;
         //verifico vincoli EST
         for(int i=M.length-1; i>=0; i--){
-            if(M[i].getValore()>max){
+            if(M[i]>max){
                 count++;
-                max=M[i].getValore();
+                max=M[i];
             }
             if((i)%N==0) { //siamo in corrisponde dell'inizio di una riga della scacchiera
                 if(EST[x]!=count)
@@ -165,7 +165,7 @@ public class Grattacielo extends Sudoku {
         if(verificaVincoli()){
             solCorrente++;
             if(solCorrente<maxSoluzioni){
-                Cella[] M=getM();
+                int[] M=getM();
                 System.out.println("Soluzione conforme numero: " + nrsol);
                 System.out.print("  ");
                 for (int i = 0; i < getN(); i++) {
@@ -186,9 +186,9 @@ public class Grattacielo extends Sudoku {
                     System.out.print(OVEST[i/getN()] + "|");
                     for (int j = i; j < i+NORD.length; j++) {
                         if (j+1%(NORD.length)!=0)
-                            System.out.print(M[j].getValore() + " ");
+                            System.out.print(M[j] + " ");
                         else
-                            System.out.print(M[j].getValore());
+                            System.out.print(M[j]);
                     }
                     System.out.print("|" + EST[i/getN()]);
                     System.out.println();
@@ -236,9 +236,9 @@ public class Grattacielo extends Sudoku {
             System.out.print(OVEST[i/getN()] + "|");
             for (int j = i; j < i+NORD.length; j++) {
                 if (j+1%(NORD.length)!=0)
-                    System.out.print(M[j].getValore() + " ");
+                    System.out.print(M[j] + " ");
                 else
-                    System.out.print(M[j].getValore());
+                    System.out.print(M[j]);
             }
             System.out.print("|" + EST[i/getN()]);
             System.out.println();
@@ -276,7 +276,7 @@ public class Grattacielo extends Sudoku {
         return EST[indice];
     }
 
-    public Cella getCella(int r, int c){
+    public int getCella(int r, int c){
         return M[c+(r*getN())];
     }
 
