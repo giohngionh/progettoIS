@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 
 import controller.ControllerGrattacielo;
 import model.backtrack.Posizione;
-import model.implProblema.Cella;
 import model.implProblema.Grattacielo;
 import view.GraphicObjectView;
 
@@ -38,12 +37,8 @@ public class test1 {
 
     public static void run(){
         ControllerGrattacielo cg = new ControllerGrattacielo(new Grattacielo(5,10));
-        Cella[] celle = cg.getCelle();
 
-        for(Cella c : celle) {
-            c.addGraphicObjectListener(new GraphicObjectView());
-            //c.setText("a");
-        }
+
 
         JFrame f = new JFrame("Prova ControllerGrattacielo");
         f.add(cg);

@@ -1,6 +1,11 @@
 package model.backtrack;
 
-public abstract class Problema<P,S>  {
+import java.util.*;
+
+public abstract class Problema<P,S> implements GraphicObject {
+
+    private List<GraphicObjectListener> listeners = new LinkedList<>();
+
     protected abstract P primoPuntoDiScelta();
 
     protected abstract P nextPuntoDiScelta(P ps, S s);
@@ -28,8 +33,8 @@ public abstract class Problema<P,S>  {
     protected abstract void scriviSoluzione(int nrsol);
 
     protected abstract void salva(int nrSol);
-
     private int nummaxsoluzioni, nrsoluzione = 0;
+
 
     public Problema(int nummaxsoluzioni) {
         this.nummaxsoluzioni = nummaxsoluzioni;
@@ -49,10 +54,12 @@ public abstract class Problema<P,S>  {
 
                 if (assegnabile(s, ps)) {
                     assegna(s, ps);
+                    notifyListeners(new GraphicEvent(s,ps));
                     if (ps.equals(ultimoPuntoDiScelta())) {
                         ++nrsoluzione;
                         scriviSoluzione(nrsoluzione);
                         deassegna(s, ps);
+                        notifyListeners(new GraphicEvent(s,ps));
                         if (!s.equals(ultimaScelta(ps)))
                             s = prossimaScelta(s);
                         else
@@ -74,6 +81,7 @@ public abstract class Problema<P,S>  {
                 ps = precedentePuntoDiScelta(ps);
                 s = ultimaSceltaAssegnata(ps);
                 deassegna(s, ps);
+                notifyListeners(new GraphicEvent(s,ps));
                 if (!s.equals(ultimaScelta(ps))) {
                     s = prossimaScelta(s);
                     backtrack = false;
@@ -97,10 +105,12 @@ public abstract class Problema<P,S>  {
 
                     if (assegnabile(s, ps)) {
                         assegna(s, ps);
+                        notifyListeners(new GraphicEvent(s,ps));
                         if (ps.equals(ultimoPuntoDiScelta())) {
                             ++nrsoluzione;
                             salva(nrsoluzione);
                             deassegna(s, ps);
+                            notifyListeners(new GraphicEvent(s,ps));
                             if (!s.equals(ultimaScelta(ps)))
                                 s = prossimaScelta(s);
                             else
@@ -122,6 +132,7 @@ public abstract class Problema<P,S>  {
                     ps = precedentePuntoDiScelta(ps);
                     s = ultimaSceltaAssegnata(ps);
                     deassegna(s, ps);
+                    notifyListeners(new GraphicEvent(s,ps));
                     if (!s.equals(ultimaScelta(ps))) {
                         s = prossimaScelta(s);
                         backtrack = false;
@@ -131,5 +142,27 @@ public abstract class Problema<P,S>  {
 
             } while (!fine);
         }
+    }
+
+    @Override
+    public void addGraphicObjectListener(GraphicObjectListener l) {
+        if (listeners.contains(l))
+            return;
+        listeners.add(l);
+
+    }
+
+    @Override
+    public void removeGraphicObjectListener(GraphicObjectListener l) {
+        listeners.remove(l);
+
+    }
+
+    protected void notifyListeners(GraphicEvent e) {
+
+        for (GraphicObjectListener gol : listeners)
+
+            gol.graphicChanged(e);
+
     }
 }

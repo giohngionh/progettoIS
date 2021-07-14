@@ -15,14 +15,14 @@ public class ControllerGrattacielo extends JPanel{
     private JTextField console;
     private JPanel scacchiera;
     private JPanel comandi;
-    private Cella[] celle;
+
 
     private Grattacielo g;
 
 
     public ControllerGrattacielo(Grattacielo g){
         this.g = g;
-        celle = g.getM();
+        int[] M = g.getM();
 
 
         console = new JTextField();
@@ -128,14 +128,14 @@ public class ControllerGrattacielo extends JPanel{
                     countE++;
                 }
                 else {
-                    Cella c = g.getCella(i-1,j-1);
-                    c.setController(this);
-                    JTextField m = c.getMirror();
+
+                    JTextField m = new JTextField();
                     m.setText("");
                     m.setFont(font1);
                     m.setHorizontalAlignment(JTextField.CENTER);
                     m.setBackground(Color.ORANGE);
                     m.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    int finalJ = j;
                     m.addActionListener(e -> {
                         int val;
                         try{
@@ -143,12 +143,12 @@ public class ControllerGrattacielo extends JPanel{
                             if (val > 5 || val < 0) {
                                 setDisplayMessage("Il valore immesso non è consentito. Usare numeri tra 1 e 5.");
                             }
-                            else{
-                                g.inserisci(val, c.getPosizione());
-                                setDisplayMessage("Inserito il valore "+val+" in posizione+"+c.getPosizione().toString());
-                            }
+//                            else{
+//                                g.inserisci(val, covert(finalJ));
+//                                setDisplayMessage("Inserito il valore "+val+" in posizione+"+c.getPosizione().toString());
+//                            }
                         } catch(NumberFormatException nfe){
-                            c.getControllore().setDisplayMessage("L'input non è un numero!");
+//                          c.getControllore().setDisplayMessage("L'input non è un numero!");
                         }
                     });
                     scacchiera.add(m);
@@ -172,8 +172,5 @@ public class ControllerGrattacielo extends JPanel{
     }
 
 
-    public Cella[] getCelle() {
-        return celle;
-    }
 
 }

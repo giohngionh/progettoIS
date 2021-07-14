@@ -215,7 +215,7 @@ public class Grattacielo extends Sudoku {
     }
 
     public void stampa(){
-        Cella[] M=getM();
+        int[] M=getM();
 
         System.out.print("  ");
         for (int i = 0; i < getN(); i++) {
