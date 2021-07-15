@@ -54,12 +54,12 @@ public abstract class Problema<P,S> implements GraphicObject {
 
                 if (assegnabile(s, ps)) {
                     assegna(s, ps);
-                    notifyListeners(new GraphicEvent(s,ps));
+
                     if (ps.equals(ultimoPuntoDiScelta())) {
                         ++nrsoluzione;
                         scriviSoluzione(nrsoluzione);
                         deassegna(s, ps);
-                        notifyListeners(new GraphicEvent(s,ps));
+
                         if (!s.equals(ultimaScelta(ps)))
                             s = prossimaScelta(s);
                         else
@@ -81,7 +81,7 @@ public abstract class Problema<P,S> implements GraphicObject {
                 ps = precedentePuntoDiScelta(ps);
                 s = ultimaSceltaAssegnata(ps);
                 deassegna(s, ps);
-                notifyListeners(new GraphicEvent(s,ps));
+
                 if (!s.equals(ultimaScelta(ps))) {
                     s = prossimaScelta(s);
                     backtrack = false;
@@ -105,12 +105,12 @@ public abstract class Problema<P,S> implements GraphicObject {
 
                     if (assegnabile(s, ps)) {
                         assegna(s, ps);
-                        notifyListeners(new GraphicEvent(s,ps));
+
                         if (ps.equals(ultimoPuntoDiScelta())) {
                             ++nrsoluzione;
                             salva(nrsoluzione);
                             deassegna(s, ps);
-                            notifyListeners(new GraphicEvent(s,ps));
+
                             if (!s.equals(ultimaScelta(ps)))
                                 s = prossimaScelta(s);
                             else
@@ -132,7 +132,7 @@ public abstract class Problema<P,S> implements GraphicObject {
                     ps = precedentePuntoDiScelta(ps);
                     s = ultimaSceltaAssegnata(ps);
                     deassegna(s, ps);
-                    notifyListeners(new GraphicEvent(s,ps));
+
                     if (!s.equals(ultimaScelta(ps))) {
                         s = prossimaScelta(s);
                         backtrack = false;

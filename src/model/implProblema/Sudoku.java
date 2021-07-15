@@ -5,13 +5,13 @@ import model.backtrack.*;
 import java.util.*;
 
 public class Sudoku extends Problema<Posizione, Integer>{
-    protected int[] M, Scacchiera;	//scacchiera del gioco
+    protected int[] M, Scacchiera;
     private Map<Posizione, Integer> scelte;
     private LinkedList<Posizione> percorso;
     private HashSet<Posizione> scelteUtente;
     private Posizione inizio, fine;
     private int minVal= 1, maxVal, soluzioneCasuale, N;
-//	private boolean salva;
+
 
 
     public Sudoku(int n,int soluzioni){

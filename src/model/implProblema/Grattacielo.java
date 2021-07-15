@@ -1,11 +1,13 @@
 package model.implProblema;
 
+import model.backtrack.GraphicOutputEvent;
+
 import java.util.LinkedList;
 
 public class Grattacielo extends Sudoku {
 
     private int[] NORD, SUD, OVEST, EST;
-    private LinkedList<int[]> soluzioniPossibili;
+    private LinkedList<int[]> soluzioniTrovate;
     private int maxSoluzioni, solCorrente=0;
 
     public Grattacielo(int []n, int []s, int []e, int []o, int maxSoluzioni) {
@@ -35,7 +37,7 @@ public class Grattacielo extends Sudoku {
         this.SUD=new int[n];
         this.EST=new int[n];
         this.OVEST=new int[n];
-        soluzioniPossibili = new LinkedList<>();
+        soluzioniTrovate = new LinkedList<>();
         estraiVincoli();
     }/*	costruttore che accetta la dimensione della scacchiera, genera i vincoli
 		e accetta il numero massimo di soluzioni*/
@@ -163,10 +165,22 @@ public class Grattacielo extends Sudoku {
     @Override
     protected void scriviSoluzione(int nrsol) {
         if(verificaVincoli()){
-            solCorrente++;
+            if(solCorrente<maxSoluzioni) {
+                solCorrente++;
+                System.out.println("Ho trovato una soluzione. Le soluzioni sono attualmente " +solCorrente);
+                int[] tmp = new int[getN()*getN()];
+                for(int i = 0; i<tmp.length; i++){
+                    tmp[i]=M[i];
+                }
+                soluzioniTrovate.add(tmp);
+            }
+        }
+        /*  if(verificaVincoli()){
             if(solCorrente<maxSoluzioni){
+                solCorrente++;
                 int[] M=getM();
-                System.out.println("Soluzione conforme numero: " + nrsol);
+                System.out.println("Soluzione conforme numero: " + solCorrente);
+                notifyListeners(new GraphicOutputEvent(this.M));
                 System.out.print("  ");
                 for (int i = 0; i < getN(); i++) {
                     if (i != getN() - 1)
@@ -211,11 +225,57 @@ public class Grattacielo extends Sudoku {
             }
 
         }
-
+*/
     }
 
     public void stampa(){
         int[] M=getM();
+
+        System.out.print("  ");
+        for (int i = 0; i < getN(); i++) {
+            if (i != getN() - 1)
+                System.out.print(NORD[i] + " ");
+            else
+                System.out.print(NORD[i]);
+        }
+        System.out.print("  ");
+        System.out.println();
+
+        for (int i = 0; i < (NORD.length * 2) + 4; i++)
+            System.out.print("-");
+        System.out.println();
+        //sezione nord
+
+        for (int i = 0; i < M.length; i+=getN()) {
+            System.out.print(OVEST[i/getN()] + "|");
+            for (int j = i; j < i+NORD.length; j++) {
+                if (j+1%(NORD.length)!=0)
+                    System.out.print(M[j] + " ");
+                else
+                    System.out.print(M[j]);
+            }
+            System.out.print("|" + EST[i/getN()]);
+            System.out.println();
+        }
+        //blocco principale compreso EST e OVEST
+
+        for (int i = 0; i < (SUD.length * 2) + 4; i++)
+            System.out.print("-");
+
+        System.out.println();
+        System.out.print("  ");
+        for (int i = 0; i < SUD.length; i++) {
+            if (i != SUD.length - 1)
+                System.out.print(SUD[i] + " ");
+            else
+                System.out.print(SUD[i]);
+        }
+        System.out.print("  ");
+        System.out.println();
+    }
+
+    public void stampa(int indice){
+        int[] M=soluzioniTrovate.get(indice);
 
         System.out.print("  ");
         for (int i = 0; i < getN(); i++) {
@@ -274,6 +334,14 @@ public class Grattacielo extends Sudoku {
 
     public int getEST(int indice){
         return EST[indice];
+    }
+
+    public int[] getSoluzioneN(int n){
+        return soluzioniTrovate.get(n);
+    }
+
+    public int getSoluzioniTrovate(){
+        return solCorrente;
     }
 
     public int getCella(int r, int c){
