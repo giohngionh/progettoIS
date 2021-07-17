@@ -1,7 +1,5 @@
 package model.implProblema;
 
-import model.backtrack.GraphicOutputEvent;
-
 import java.util.LinkedList;
 
 public class Grattacielo extends Sudoku {

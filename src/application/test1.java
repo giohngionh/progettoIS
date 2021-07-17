@@ -6,42 +6,21 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-
-import controller.ControllerGrattacielo;
-import model.backtrack.Posizione;
 import model.implProblema.Grattacielo;
-import view.GraphicObjectView;
+import controller.ControllerViewGrattacielo;
 
 import javax.swing.*;
 
 public class test1 {
     public static void main(String[] args){
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-        }
-        catch (ClassNotFoundException e) {
-            // handle exception
-        }
-        catch (InstantiationException e) {
-            // handle exception
-        }
-        catch (IllegalAccessException e) {
-            // handle exception
-        }
-        run();
-
-    }
-
-    public static void run(){
-        ControllerGrattacielo cg = new ControllerGrattacielo(new Grattacielo(5,10));
-
-
-
         JFrame f = new JFrame("Prova ControllerGrattacielo");
-        f.add(cg);
+        JButton chiudi = new JButton("CHIUDI");
+        chiudi.addActionListener(e -> {
+            f.dispose();
+        });
+        JPanel p = new JPanel();
+        p.add(chiudi);
+        f.add(p);
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setPreferredSize(new Dimension(600,600));
         f.pack();

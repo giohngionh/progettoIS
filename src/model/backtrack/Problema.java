@@ -2,9 +2,7 @@ package model.backtrack;
 
 import java.util.*;
 
-public abstract class Problema<P,S> implements GraphicObject {
-
-    private List<GraphicObjectListener> listeners = new LinkedList<>();
+public abstract class Problema<P,S>{
 
     protected abstract P primoPuntoDiScelta();
 
@@ -142,27 +140,5 @@ public abstract class Problema<P,S> implements GraphicObject {
 
             } while (!fine);
         }
-    }
-
-    @Override
-    public void addGraphicObjectListener(GraphicObjectListener l) {
-        if (listeners.contains(l))
-            return;
-        listeners.add(l);
-
-    }
-
-    @Override
-    public void removeGraphicObjectListener(GraphicObjectListener l) {
-        listeners.remove(l);
-
-    }
-
-    protected void notifyListeners(GraphicEvent e) {
-
-        for (GraphicObjectListener gol : listeners)
-
-            gol.graphicChanged(e);
-
     }
 }

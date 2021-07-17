@@ -2,7 +2,6 @@ package model.prove;
 
 import java.util.Scanner;
 
-import model.backtrack.FakeOutputObjectListener;
 import model.backtrack.Posizione;
 import model.implProblema.Grattacielo;
 
@@ -20,7 +19,6 @@ public class TestGrattacielo {
       Scanner sc= new Scanner(System.in);
         while(true) {
             g1.stampa();
-            g1.addGraphicObjectListener(new FakeOutputObjectListener());
             System.out.println("Inserire valore oppure 99 per risolvere");
             int val=sc.nextInt();
             if(val==99) {
