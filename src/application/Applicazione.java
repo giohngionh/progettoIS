@@ -1,17 +1,21 @@
-package controller;
+package application;
+
+import controller.ControllerViewGrattacielo;
+import model.implProblema.Grattacielo;
 
 import javax.swing.*;
 import java.awt.*;
-import model.implProblema.Grattacielo;
 
-public class ProvaController {
-    public ProvaController(){
-        Grattacielo g = new Grattacielo(5,10);
+
+public class Applicazione {
+
+    public Applicazione() {
+        Grattacielo g = new Grattacielo(5, 10);
         ControllerViewGrattacielo cg = new ControllerViewGrattacielo(g);
         JButton nuovo = new JButton("NUOVO");
         JFrame finestra = new JFrame("GRATTACIELI");
         nuovo.addActionListener(e -> {
-            ProvaController pv = new ProvaController();
+            Applicazione pv = new Applicazione();
             finestra.dispose();
         });
         finestra.add(nuovo, BorderLayout.NORTH);
@@ -20,12 +24,13 @@ public class ProvaController {
         finestra.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         finestra.pack();
         finestra.setVisible(true);
-        finestra.setSize(new Dimension(550,650));
-        Dimension d =Toolkit.getDefaultToolkit().getScreenSize();
-        finestra.setLocation(d.width/2-finestra.getSize().width/2, d.height/2-finestra.getSize().height/2);
+        finestra.setSize(new Dimension(550, 650));
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        finestra.setLocation(d.width / 2 - finestra.getSize().width / 2, d.height / 2 - finestra.getSize().height / 2);
     }
+
     public static void main(String[] args) {
-        ProvaController pv = new ProvaController();
+        Applicazione pv = new Applicazione();
     }
 
 }
