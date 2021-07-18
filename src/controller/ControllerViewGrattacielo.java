@@ -163,7 +163,7 @@ public class ControllerViewGrattacielo extends JPanel{
 
         JButton risolvi = new JButton("RISOLVI");
         risolvi.addActionListener(e -> {
-            g.risolvi();
+            g.risolvi(false);
             risolto = true;
             numeroSoluzioni = g.getSoluzioniTrovate();
             indiceN = 0;

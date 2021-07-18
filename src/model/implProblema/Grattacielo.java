@@ -165,7 +165,7 @@ public class Grattacielo extends Sudoku {
         if(verificaVincoli()){
             if(solCorrente<maxSoluzioni) {
                 solCorrente++;
-                System.out.println("Ho trovato una soluzione. Le soluzioni sono attualmente " +solCorrente);
+                //System.out.println("Ho trovato una soluzione. Le soluzioni sono attualmente " +solCorrente);
                 int[] tmp = new int[getN()*getN()];
                 for(int i = 0; i<tmp.length; i++){
                     tmp[i]=M[i];
@@ -173,57 +173,6 @@ public class Grattacielo extends Sudoku {
                 soluzioniTrovate.add(tmp);
             }
         }
-        /*  if(verificaVincoli()){
-            if(solCorrente<maxSoluzioni){
-                solCorrente++;
-                int[] M=getM();
-                System.out.println("Soluzione conforme numero: " + solCorrente);
-                notifyListeners(new GraphicOutputEvent(this.M));
-                System.out.print("  ");
-                for (int i = 0; i < getN(); i++) {
-                    if (i != getN() - 1)
-                        System.out.print(NORD[i] + " ");
-                    else
-                        System.out.print(NORD[i]);
-                }
-                System.out.print("  ");
-                System.out.println();
-
-                for (int i = 0; i < (NORD.length * 2) + 4; i++)
-                    System.out.print("-");
-                System.out.println();
-                //sezione nord
-
-                for (int i = 0; i < M.length; i+=getN()) {
-                    System.out.print(OVEST[i/getN()] + "|");
-                    for (int j = i; j < i+NORD.length; j++) {
-                        if (j+1%(NORD.length)!=0)
-                            System.out.print(M[j] + " ");
-                        else
-                            System.out.print(M[j]);
-                    }
-                    System.out.print("|" + EST[i/getN()]);
-                    System.out.println();
-                }
-                //blocco principale compreso EST e OVEST
-
-                for (int i = 0; i < (SUD.length * 2) + 4; i++)
-                    System.out.print("-");
-
-                System.out.println();
-                System.out.print("  ");
-                for (int i = 0; i < SUD.length; i++) {
-                    if (i != SUD.length - 1)
-                        System.out.print(SUD[i] + " ");
-                    else
-                        System.out.print(SUD[i]);
-                }
-                System.out.print("  ");
-                System.out.println();
-            }
-
-        }
-*/
     }
 
     public void stampa(){
@@ -340,10 +289,6 @@ public class Grattacielo extends Sudoku {
 
     public int getSoluzioniTrovate(){
         return solCorrente;
-    }
-
-    public int getCella(int r, int c){
-        return M[c+(r*getN())];
     }
 
 }

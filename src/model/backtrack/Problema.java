@@ -42,7 +42,7 @@ public abstract class Problema<P,S>{
         this(Integer.MAX_VALUE);
     }
 
-    public void risolvi() {
+    public void risolvi(boolean flag) {
         P ps = primoPuntoDiScelta();
         S s = primaScelta(ps);
 
@@ -55,7 +55,10 @@ public abstract class Problema<P,S>{
 
                     if (ps.equals(ultimoPuntoDiScelta())) {
                         ++nrsoluzione;
-                        scriviSoluzione(nrsoluzione);
+                        if(flag)
+                            salva(nrsoluzione);
+                        else
+                            scriviSoluzione(nrsoluzione);
                         deassegna(s, ps);
 
                         if (!s.equals(ultimaScelta(ps)))
@@ -90,55 +93,4 @@ public abstract class Problema<P,S>{
         } while (!fine);
     }
 
-    public void risolvi(boolean salvaSoluzione){
-        if(!salvaSoluzione)
-            risolvi();
-        else{
-            P ps = primoPuntoDiScelta();
-            S s = primaScelta(ps);
-
-            boolean backtrack = false, fine = false;
-            do {
-                while (!backtrack && nrsoluzione < nummaxsoluzioni) {
-
-                    if (assegnabile(s, ps)) {
-                        assegna(s, ps);
-
-                        if (ps.equals(ultimoPuntoDiScelta())) {
-                            ++nrsoluzione;
-                            salva(nrsoluzione);
-                            deassegna(s, ps);
-
-                            if (!s.equals(ultimaScelta(ps)))
-                                s = prossimaScelta(s);
-                            else
-                                backtrack = true;
-
-                        } else {
-                            ps = nextPuntoDiScelta(ps,s);
-                            s = primaScelta(ps);
-
-                        }
-                    } else if (!s.equals(ultimaScelta(ps)))
-                        s = prossimaScelta(s);
-                    else
-                        backtrack = true;
-                }
-                fine = ps.equals(primoPuntoDiScelta())
-                        || nrsoluzione == nummaxsoluzioni;
-                while (backtrack && !fine) {
-                    ps = precedentePuntoDiScelta(ps);
-                    s = ultimaSceltaAssegnata(ps);
-                    deassegna(s, ps);
-
-                    if (!s.equals(ultimaScelta(ps))) {
-                        s = prossimaScelta(s);
-                        backtrack = false;
-                    } else if (ps.equals(primoPuntoDiScelta()))
-                        fine = true;
-                }
-
-            } while (!fine);
-        }
-    }
 }

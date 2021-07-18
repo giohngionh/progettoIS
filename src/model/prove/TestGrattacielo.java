@@ -22,7 +22,7 @@ public class TestGrattacielo {
             System.out.println("Inserire valore oppure 99 per risolvere");
             int val=sc.nextInt();
             if(val==99) {
-                g1.risolvi();
+                g1.risolvi(false);
                 System.out.println("Indica quale soluzione vuoi vedere da 1 a "+g1.getSoluzioniTrovate());
                 System.out.println("Oppure inserisci 99 per uscire");
                 val = sc.nextInt();
