@@ -158,6 +158,7 @@ public class Sudoku extends Problema<Posizione, Integer>{
     protected void assegna(Integer scelta, Posizione puntoDiScelta) {
         if(scelteUtente.contains(puntoDiScelta))
             return;
+
         int r=puntoDiScelta.getRiga();
         int c=puntoDiScelta.getColonna();
         percorso.add(puntoDiScelta);
@@ -208,12 +209,12 @@ public class Sudoku extends Problema<Posizione, Integer>{
         scelteUtente.add(ps);
     }//inserisci
 
-    public void rimuovi(int valore, Posizione ps) {
+    public void rimuovi(Posizione ps) {
         if(!scelteUtente.contains(ps))
             throw new IllegalArgumentException("La casella che si cerca di rimuovere non esiste!");
         int r=ps.getRiga();
         int c=ps.getColonna();
-        M[c+(r*N)] = valore;
+        M[c+(r*N)] = 0;
         scelteUtente.remove(ps);
     }
 

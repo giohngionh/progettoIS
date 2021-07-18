@@ -291,5 +291,9 @@ public class Grattacielo extends Sudoku {
         return solCorrente;
     }
 
+    public int getCella(int posizione){
+        return M[posizione];
+    }
+
 }
 

@@ -218,7 +218,7 @@ public class ControllerViewGrattacielo extends JPanel{
                         else{
                             g.inserisci(val, new Posizione(finalI, finalJ));
                             setDisplayMessage("Inserito il valore "+val+" in posizione"+"("+finalI+","+finalJ+")");
-                            g.stampa();
+                           // g.stampa();
                         }
                     } catch (NumberFormatException nfe) {
                         setDisplayMessage("L'input non è un numero!");
